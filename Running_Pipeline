@@ -1,0 +1,54 @@
+Running the Pipeline on Ron
+Running Trimmomatic
+
+nohup trimmomatic PE -phred33 F-5_TAAGGCGA-GCGTAAGA_L001_R1_001.fastq.gz F-5_TAAGGCGA-GCGTAAGA_L001_R2_001.fastq.gz ofp.fastq.gz ofu.fastq.gz orp.fastq.gz oru.fastq.gz ILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36 &
+
+Trimmomatic Generic Command 
+nohup trimmomatic PE -phred33 forward_reads.fastq.gz reverse_reads.fastq.gz output_forward_paired.fastq.gzoutput_forward_unpaired.fastq.gz output_reverse_paired.fastq.gz output_reverse_unpaired.fastq.gzILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36 &
+
+Trimmomatic Results 4 Zipped Files
+ofp.fastaq.gz
+ofu.fastaq.gz
+orp.fastaq.gz
+oru.fastaq.gz
+
+Counting the Remaining Sequences
+gzip -d o* //unzip all fastaq files
+
+Grep //count how many times char appears 
+grep -o "+" orp.fastq | wc -l
+grep -o "+" ofu.fastq | wc -l
+grep -o "+" oru.fastq | wc -l
+grep -o "+" ofp.fastq | wc -l
+
+FastQC
+nohup fastqc F-5_TAAGGCGA-GCGTAAGA_L001_R2_001.fastq.gz & //silent run of fastQC
+
+SPADES
+nohup spades.py -t 2 -1 ofp.fastq.gz -2 orp.fastq.gz -o F-5-assembled &
+
+SPADES Generic Command
+nohup spades.py -t 2 -1 filename1 -2 filename2 -o output_folder &
+//filename1 = forward read (compressed file format)
+//filename2 = reverse read (compressed file format)
+//output_folder = name of folder where output files will be
+
+SPADES Results
+//look for contigs.fasta file used later in Prokka
+
+Quast //Quality Assessment Tool for Genome Assemblies
+//download reference data
+mkdir reference //make folder called reference
+cd reference //move into reference folder
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/039/765/GCF_000039765.1_ASM3976v1/GCF_000039765.1_ASM3976v1_genomic.fna.gz //download file from NCBI website
+gzip -d GCF_000039765.1_ASM3976v1_genomic.fna.gz //decompress file
+nohup quast.py -R reference/GCF_000039765.1_ASM3976v1_genomic.fna -o quast/quast_report F-5-assembled/contigs.fasta &     //run Quast using reference file
+
+Quast Results
+//look for report.pdf in quast_report folder
+
+Prokka
+nohup prokka --outdir prokka_report F-5-assembled/contigs.fasta & //run Prokka with the contigs.fasta file
+
+Prokka Results
+//all Prokka files will be in the output folder prokka_report
