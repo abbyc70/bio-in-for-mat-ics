@@ -1,0 +1,6 @@
+Escherichia coli
+//create folder for downloaded data
+mkdir myGenomes
+//silent download from the ENA website
+nohup wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR382/000/SRR3824750/SRR3824750_1.fastq.gz
+nohup wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR382/000/SRR3824750/SRR3824750_2.fastq.gz
