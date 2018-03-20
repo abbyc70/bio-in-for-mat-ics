@@ -51,4 +51,4 @@ Prokka
 nohup prokka --outdir prokka_report F-5-assembled/contigs.fasta & //run Prokka with the contigs.fasta file
 
 Prokka Results
-//all Prokka files will be in the output folder prokka_report
+//all Prokka files will be in the output folder prokka_report 
