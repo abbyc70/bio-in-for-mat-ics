@@ -1,0 +1,5 @@
+//Run trimmomatic for strain1
+cd "/home/keeneLL/aconnorbl/myGenomes/testing/strain1" trimmomatic PE -phred33 SRR3824750_1.fastq.gz SRR3824750_2.fastq.gz  ofp.fastq.gz ofu.fastq.gz orp.fastq.gz oru.fastq.gz ILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+//Run trimmomatic for strain2
+cd "/home/keeneLL/aconnorbl/myGenomes/testing/strain2" trimmomatic PE -phred33 SRR3824750_1.fastq.gz SRR3824750_2.fastq.gz  ofp.fastq.gz ofu.fastq.gz orp.fastq.gz oru.fastq.gz ILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
