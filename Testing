@@ -1,5 +1,40 @@
-//Run trimmomatic for strain1
-cd "/home/keeneLL/aconnorbl/myGenomes/testing/strain1" trimmomatic PE -phred33 SRR3824750_1.fastq.gz SRR3824750_2.fastq.gz  ofp.fastq.gz ofu.fastq.gz orp.fastq.gz oru.fastq.gz ILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+#!/bin/bash
+#bioinformatics
 
-//Run trimmomatic for strain2
-cd "/home/keeneLL/aconnorbl/myGenomes/testing/strain2" trimmomatic PE -phred33 SRR3824750_1.fastq.gz SRR3824750_2.fastq.gz  ofp.fastq.gz ofu.fastq.gz orp.fastq.gz oru.fastq.gz ILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+#variables
+HOMEDIR = "/home/keeneLL/aconnorbl/myGenomes/testing/"
+STRAIN1DIR = "/home/keeneLL/aconnorbl/myGenomes/testing/strain1"
+STRAIN2DIR = "/home/keeneLL/aconnorbl/myGenomes/testing/strain2" 
+
+# Run trimmomatic for strain1
+cd $STRAIN1DIR
+trimmomatic PE -phred33 SRR3824750_1.fastq.gz SRR3824750_2.fastq.gz  ofp.fastq.gz ofu.fastq.gz orp.fastq.gz oru.fastq.gz ILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+# Run trimmomatic for strain2
+cd $STRAIN2DIR
+trimmomatic PE -phred33 SRR3824750_1.fastq.gz SRR3824750_2.fastq.gz  ofp.fastq.gz ofu.fastq.gz orp.fastq.gz oru.fastq.gz ILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+# fastQC for strain1
+cd $STRAIN1DIR
+fastqc SRR3824750_2.fastq.gz
+
+# fastQC for strain2
+cd $STRAIN2DIR
+fastqc SRR3824750_2.fastq.gz
+
+# SPADES strain1
+cd $STRAIN1DIR
+spades.py -t 2 -1 ofp.fastq.gz -2 orp.fastq.gz -o SRR-assembled --careful
+
+# SPADES strain2
+cd $STRAIN2DIR
+spades.py -t 2 -1 ofp.fastq.gz -2 orp.fastq.gz -o SRR-assembled
+
+# QUAST strain1
+cd $HOMEDIR
+mkdir reference
+# download reference file from the NCBI website
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/039/765/GCF_000039765.1_ASM3976v1/GCF_000039765.1_ASM3976v1_genomic.fna.gz
+gzip -d GCF_000039765.1_ASM3976v1_genomic.fna.gz 
+
+
