@@ -6,6 +6,12 @@ HOMEDIR = "/home/keeneLL/aconnorbl/myGenomes/testing/"
 STRAIN1DIR = "/home/keeneLL/aconnorbl/myGenomes/testing/strain1"
 STRAIN2DIR = "/home/keeneLL/aconnorbl/myGenomes/testing/strain2" 
 
+#Loop trimmomatic
+ls -dl strain* | awk -F "_" '{print $3}' |
+while read value;
+do
+trimmomatic PE -phred33 SRR3824750_1.fastq.gz SRR3824750_2.fastq.gz  ofp.fastq.gz ofu.fastq.gz orp.fastq.gz oru.fastq.gz ILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
 # Run trimmomatic for strain1
 cd $STRAIN1DIR
 trimmomatic PE -phred33 SRR3824750_1.fastq.gz SRR3824750_2.fastq.gz  ofp.fastq.gz ofu.fastq.gz orp.fastq.gz oru.fastq.gz ILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
