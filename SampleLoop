@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#sample looping script
+
+ls -dl Sample_* | awk -F "_" '{print $3}' |
+
+while read value ;
+do
+        mkdir Sample_$value/test_folder
+done
