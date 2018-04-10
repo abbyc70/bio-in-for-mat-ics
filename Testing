@@ -46,3 +46,32 @@ wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/039/765/GCF_000039765.1_ASM3
 gzip -d GCF_000039765.1_ASM3976v1_genomic.fna.gz 
 
 
+#prokka script
+ls -dl strain_* | awk -F "_" '{print $2}' |
+while read value;
+do
+
+cd strain_$value
+
+nohup prokka --outdir prokka_report assembled-strain_$value/contigs.fasta &
+
+cd ..
+done
+
+#roary script
+ls -dl strain_* | awk -F "_" '{print $2}' |
+while read value;
+do
+
+cd "strain_$value"/prokka_report
+
+cp *.gff strain_$value.gff
+
+mv strain_$value.gff /home/keeneLL/aconnorbl/myGenomes/testing/strain_$value/roary
+
+cd ..
+
+nohup roary -f ./results -e -n -v *.gff &
+
+cd ..
+done
