@@ -7,12 +7,25 @@ STRAIN1DIR = "/home/keeneLL/aconnorbl/myGenomes/testing/strain1"
 STRAIN2DIR = "/home/keeneLL/aconnorbl/myGenomes/testing/strain2" 
 
 #Loop trimmomatic
+#!/bin/bash 
+
 ls -dl strain_* | awk -F "_" '{print $2}' |
+
+#loop into strain folders
 while read value;
 do
-cd strain_$value
+
+#move into strain folder
+cd strain_$value 
+
+#run trimmomatic in current folder 
 nohup trimmomatic PE -phred33 *1.fastq.gz *2.fastq.gz ofp.fastq.gz ofu.fastq.gz orp.fastq.gz oru.fastq.gz ILLUMINACLIP:/usr/share/trimmomatic/NexteraPE-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36&
+
+#move up one folder
 cd ..
+
+#finish loop
+done
 
 # Run trimmomatic for strain1
 cd $STRAIN1DIR
@@ -30,6 +43,27 @@ fastqc SRR3824750_2.fastq.gz
 cd $STRAIN2DIR
 fastqc SRR3824750_2.fastq.gz
 
+#!/bin/bash
+#fastQC script
+
+ls -dl strain* | awk -F "_" '{print $2}' |
+
+#loop into strain folders
+while read value;
+do
+
+#move into strain folder
+cd strain_$value
+
+#run fastqc
+fastqc *2.fastq.gz
+
+#move up one folder
+cd ..
+
+#finnish loop
+done
+
 # SPADES strain1
 cd $STRAIN1DIR
 spades.py -t 2 -1 ofp.fastq.gz -2 orp.fastq.gz -o SRR-assembled --careful
@@ -38,6 +72,27 @@ spades.py -t 2 -1 ofp.fastq.gz -2 orp.fastq.gz -o SRR-assembled --careful
 cd $STRAIN2DIR
 spades.py -t 2 -1 ofp.fastq.gz -2 orp.fastq.gz -o SRR-assembled
 
+#!/bin/bash
+#SPADES script
+
+ls -dl strain_* | awk -F "_" '{print $2}' |
+
+#loop into strain folders
+while read value;
+do
+
+#move into strain folder
+cd strain_$value
+
+#run SPADES in current folder
+nohup spades.py -t 2 -1 ofp.fastq.gz -2 orp.fastq.gz -o assembled-strain_$value  --careful &
+
+#move up one folder
+cd ..
+
+#finish the loop
+done
+
 # QUAST strain1
 cd $HOMEDIR
 mkdir reference
@@ -45,17 +100,61 @@ mkdir reference
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/039/765/GCF_000039765.1_ASM3976v1/GCF_000039765.1_ASM3976v1_genomic.fna.gz
 gzip -d GCF_000039765.1_ASM3976v1_genomic.fna.gz 
 
+#!/bin/bash
+#QUAST script
 
-#prokka script
 ls -dl strain_* | awk -F "_" '{print $2}' |
+
+#loop into strain folders
 while read value;
 do
 
+#move into strain folder
 cd strain_$value
 
+#create a reference folder
+mkdir reference
+
+#move into reference folder
+cd reference
+
+#download reference file from the NCIB website
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/039/765/GCF_000039765.1_ASM3976v1/GCF_000039765.1_ASM3976v1_genomic.fna.gz
+
+#unzip the reference file
+gzip -d GCF_000039765.1_ASM3976v1_genomic.fna.gz
+
+#move up one folder
+cd ..
+
+#run QUAST in current folder
+nohup quast.py -R reference/GCF_000039765.1_ASM3976v1_genomic.fna -o quast/quast_report assembled-strain_$value/contigs.fasta &
+
+#move up one folder
+cd ..
+
+#finish the loop
+done
+
+#!/bin/bash
+#prokka script
+
+ls -dl strain_* | awk -F "_" '{print $2}' |
+
+#loop into strain folders
+while read value;
+do
+
+#move into strain folder
+cd strain_$value
+
+#run PROKKA in current folder
 nohup prokka --outdir prokka_report assembled-strain_$value/contigs.fasta &
 
+#move up one folder
 cd ..
+
+#finish the loop
 done
 
 #roary script
