@@ -157,20 +157,34 @@ cd ..
 #finish the loop
 done
 
+#!/bin/bash
 #roary script
+
+#create folder named roary
+mkdir roary
+
+#loop into strains
 ls -dl strain_* | awk -F "_" '{print $2}' |
 while read value;
 do
 
-cd "strain_$value"/prokka_report
+#navigate into strain prokka_report folder
+cd /home/keeneLL/aconnorbl/myGenomes/testing/strain_$value/prokka_report
 
+#copy all .gff files and rename according to strain_$value
 cp *.gff strain_$value.gff
 
-mv strain_$value.gff /home/keeneLL/aconnorbl/myGenomes/testing/strain_$value/roary
+#move .gff files to roary folder
+mv *.gff /home/keeneLL/aconnorbl/myGenomes/testing/roary/
 
-cd ..
+#finish loop
+done
 
+#navigate into roary folder
+cd /home/keeneLL/aconnorbl/myGenomes/testing/roary/
+
+#run roary
 nohup roary -f ./results -e -n -v *.gff &
 
-cd ..
-done
+
+
