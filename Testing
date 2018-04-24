@@ -187,4 +187,19 @@ cd /home/keeneLL/aconnorbl/myGenomes/testing/roary/
 nohup roary -f ./results -e -n -v *.gff &
 
 
+Master Script
+#!/bin/bash
+#masterScript runs all sequencing scripts
 
+#run each script with && to ensure that the following instructions is executed ONLY if the previous returned "0" (="ok")
+./trimmomatic.sh &&
+
+./factQC.sh &&
+
+./spades.sh &&
+
+./quast.sh &&
+
+./prokka.sh &&
+
+./roary.sh &&
